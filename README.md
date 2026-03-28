@@ -62,8 +62,6 @@ Our goal in **HackIndia Spark 8** is to:
 
 ## 📂 Repository Structure
 
-
-.
 ├── client/ # Frontend code
 ├── server/ # Backend code
 ├── docs/ # Documentation

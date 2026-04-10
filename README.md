@@ -15,7 +15,7 @@
 | 👑 Team Leader  | **Prathip M**     |
 | 💡 Member       | Sujitha S         |
 | 💡 Member       | Rubika Devi P     |
-| 💡 Member       | Rohit L           |
+| 💡 Member       | Rohith L           |
 | 💡 Member       | Vijanthar MC      |
 
 ---

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { History as HistoryIcon, Clock, Calendar, ChevronRight, Stethoscope, Search, Trash2, ArrowLeft } from 'lucide-react';
+import { History as HistoryIcon, Clock, Calendar, ChevronRight, Stethoscope, Search, Trash2, ArrowLeft, Leaf, BookOpen } from 'lucide-react';
 import { Button, Card } from '../components/ui';
 import { useLanguage } from '../context/LanguageContext';
 import { useUser } from '../context/UserContext';
@@ -69,43 +69,60 @@ export const History = () => {
                 transition={{ duration: 0.3, delay: idx * 0.05 }}
               >
                 <Card className="p-8 group hover:border-primary/30 transition-all border-transparent bg-surface-container-low/50">
-                   <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-                     <div className="w-16 h-16 rounded-[24px] bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform shadow-inner">
-                        <Stethoscope className="w-8 h-8" />
-                     </div>
-                     
-                     <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1 rounded-full">{t("Symptom Analysis", "அறிகுறி பகுப்பாய்வு")}</span>
-                           <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
-                              <Calendar className="w-3 h-3" /> {formatDate(item.timestamp)}
-                           </div>
-                           <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
-                              <Clock className="w-3 h-3" /> {formatTime(item.timestamp)}
-                           </div>
-                        </div>
-                        <h3 className="text-2xl font-black text-on-surface mb-2 tracking-tight group-hover:text-primary transition-colors">{item.condition}</h3>
-                        <p className="text-on-surface-variant font-medium text-sm leading-relaxed opacity-70">
-                          {t(`Recommended Specialist: ${item.spec}`, `பரிந்துரைக்கப்படும் நிபுணர்: ${item.spec}`)}
-                        </p>
-                     </div>
+                    <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+                      <div className="w-16 h-16 rounded-[24px] bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                         {item.type === 'Remedy Saved' ? <Leaf className="w-8 h-8 text-green-500" /> : 
+                          item.type === 'Resource Read' ? <BookOpen className="w-8 h-8 text-blue-500" /> :
+                          <Stethoscope className="w-8 h-8" />}
+                      </div>
+                      
+                      <div className="flex-1">
+                         <div className="flex items-center gap-3 mb-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1 rounded-full">
+                               {item.type ? t(item.type, item.type) : t("Symptom Analysis", "அறிகுறி பகுப்பாய்வு")}
+                            </span>
+                            <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
+                               <Calendar className="w-3 h-3" /> {formatDate(item.timestamp)}
+                            </div>
+                            <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
+                               <Clock className="w-3 h-3" /> {formatTime(item.timestamp)}
+                            </div>
+                         </div>
+                         <h3 className="text-2xl font-black text-on-surface mb-2 tracking-tight group-hover:text-primary transition-colors">
+                            {item.title || item.condition}
+                         </h3>
+                         <p className="text-on-surface-variant font-medium text-sm leading-relaxed opacity-70">
+                           {item.type === 'Remedy Saved' ? item.details : 
+                            t(`Recommended Specialist: ${item.spec}`, `பரிந்துரைக்கப்படும் நிபுணர்: ${item.spec}`)}
+                         </p>
+                      </div>
 
-                     <div className="flex gap-3 w-full md:w-auto">
-                        <Button 
-                          variant="outline" 
-                          className="flex-1 md:flex-initial rounded-2xl"
-                          onClick={() => navigate(`/doctors?spec=${item.spec}`)}
-                        >
-                          <Search className="w-4 h-4 mr-2" /> {t("Find Doctor", "நிபுணரைத் தேடு")}
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          className="p-3 rounded-2xl md:hidden lg:flex"
-                        >
-                          <ChevronRight className="w-5 h-5" />
-                        </Button>
-                     </div>
-                   </div>
+                      <div className="flex gap-3 w-full md:w-auto">
+                         {item.type === 'Remedy Saved' ? (
+                           <Button 
+                             variant="outline" 
+                             className="flex-1 md:flex-initial rounded-2xl"
+                             onClick={() => navigate('/remedies')}
+                           >
+                              {t("View Recipes", "சமையல் குறிப்பைக் காண்க")}
+                           </Button>
+                         ) : (
+                           <Button 
+                             variant="outline" 
+                             className="flex-1 md:flex-initial rounded-2xl"
+                             onClick={() => navigate(`/doctors?spec=${item.spec}`)}
+                           >
+                             <Search className="w-4 h-4 mr-2" /> {t("Find Doctor", "நிபுணரைத் தேடு")}
+                           </Button>
+                         )}
+                         <Button 
+                           variant="ghost" 
+                           className="p-3 rounded-2xl md:hidden lg:flex"
+                         >
+                           <ChevronRight className="w-5 h-5" />
+                         </Button>
+                      </div>
+                    </div>
                 </Card>
               </motion.div>
             ))}

@@ -67,16 +67,6 @@ export const Dashboard = ({ onSelectTip }) => {
            </h1>
            <p className="text-on-surface-variant text-xl font-medium mt-2">{t("Your vitals are looking great today.", "உங்கள் ஆரோக்கியம் இன்று சிறப்பாக உள்ளது.")}</p>
         </motion.div>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-primary-fixed px-8 py-4 rounded-3xl flex items-center gap-4 shadow-xl shadow-primary/10 border border-primary/20"
-        >
-          <div className="w-10 h-10 bg-white/50 rounded-full flex items-center justify-center">
-            <Flame className="text-on-primary-fixed w-6 h-6 fill-on-primary-fixed" />
-          </div>
-          <span className="font-black text-on-primary-fixed uppercase tracking-wider text-sm">14-Day Streak 🔥</span>
-        </motion.div>
       </div>
 
       {/* Main Grid */}
@@ -117,45 +107,48 @@ export const Dashboard = ({ onSelectTip }) => {
           </motion.div>
         ))}
 
-        {/* Pro Charts Placeholder / Visuals */}
+        {/* Daily Wellness Insight */}
         <motion.div 
           className="lg:col-span-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="p-10 h-full relative overflow-hidden bg-primary/5 border-transparent">
-             <div className="relative z-10">
-               <div className="flex items-center justify-between mb-10">
-                 <div>
-                    <h2 className="text-2xl font-black text-on-surface tracking-tight">{t("Weekly Health Activity", "வாராந்திர செயல்பாடு")}</h2>
-                    <p className="text-on-surface-variant font-bold text-xs uppercase mt-1 tracking-widest">Analytics Dashboard</p>
+          <Card className="p-10 h-full relative overflow-hidden bg-surface-container border border-outline-variant/10 group cursor-pointer hover:border-primary/30 transition-all hover:shadow-2xl shadow-sm" onClick={() => navigate('/guide')}>
+             <div className="absolute top-0 right-0 w-48 h-48 opacity-5 pointer-events-none overflow-hidden rounded-tr-[40px] transition-transform duration-700 group-hover:scale-125">
+                <div className="w-64 h-64 rounded-full bg-primary -mt-16 -mr-16" />
+             </div>
+             <div className="relative z-10 flex flex-col h-full justify-between">
+               <div>
+                 <div className="flex items-center gap-3 mb-6">
+                    <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">{t("Daily Insight", "இன்றைய சிறப்புத் தகவல்")}</span>
                  </div>
-                 <div className="flex gap-2">
-                   {['Week', 'Month', 'Year'].map(f => (
-                     <button key={f} className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all", f === 'Week' ? 'bg-primary text-white shadow-lg' : 'bg-white/50 text-on-surface-variant hover:bg-white')}>
-                        {f}
-                     </button>
-                   ))}
-                 </div>
+                 <h2 className="text-3xl md:text-5xl font-black font-headline text-on-surface tracking-tight leading-tight mb-6 group-hover:text-primary transition-colors">
+                    {t("The Power of Traditional Spices in Immunity", "நோய் எதிர்ப்புச் சக்திக்கு பாரம்பரிய மசாலாக்களின் வலிமை")}
+                 </h2>
+                 <p className="text-on-surface-variant text-lg font-medium leading-[1.8] max-w-2xl opacity-80">
+                    {t("Turmeric, black pepper, and cumin are not just flavor enhancers; they are potent anti-inflammatory agents that protect the body against seasonal illnesses. Discover how to incorporate them effectively.", "மஞ்சள், மிளகு மற்றும் சீரகம் ஆகியவை சுவைக்கு மட்டுமல்ல; அவை உடலை தொற்றுகளில் இருந்து பாதுகாக்கும் சிறந்த மருந்துகளாகும். அவற்றை எவ்வாறு பயன்படுத்துவது என்பதை அறியவும்.")}
+                 </p>
                </div>
                
-               {/* Visual placeholder for chart */}
-               <div className="h-64 flex items-end gap-3 px-4">
-                 {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
-                   <div key={i} className="flex-1 flex flex-col items-center gap-4">
-                      <motion.div 
-                        initial={{ height: 0 }}
-                        animate={{ height: `${h}%` }}
-                        transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
-                        className={cn("w-full rounded-2xl shadow-xl transition-all hover:brightness-110", i === 3 ? "hero-gradient" : "bg-primary/20")}
-                      />
-                      <span className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-tighter">Day {i+1}</span>
-                   </div>
-                 ))}
+               <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-8">
+                 <div className="grid grid-cols-2 gap-8 border-l-2 border-primary/20 pl-6">
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mb-1.5">{t("Category", "வகை")}</div>
+                      <div className="text-sm font-bold text-on-surface">{t("Nutrition", "உணவு & ஊட்டச்சத்து")}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mb-1.5">{t("Read Time", "வாசிப்பு நேரம்")}</div>
+                      <div className="text-sm font-bold text-on-surface flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> 4 {t("min", "நிமிடம்")}</div>
+                    </div>
+                 </div>
+                 <div className="flex-grow flex sm:justify-end">
+                    <Button variant="ghost" className="rounded-2xl group-hover:bg-primary/5 pl-6 pr-4 h-12">
+                       {t("Read Full Guide", "முழு வழிகாட்டியைப் படிக்க")} <ArrowUpRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </Button>
+                 </div>
                </div>
              </div>
-             <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mb-48 -mr-48" />
           </Card>
         </motion.div>
 

@@ -18,6 +18,7 @@ export const Doctors = () => {
   const [specFilter, setSpecFilter] = useState(initialSpec);
   const [locFilter, setLocFilter] = useState('');
   const [bookingDoc, setBookingDoc] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   const filteredDoctors = useMemo(() => {
     return DOCTORS_DATA.filter(doc => {
@@ -71,13 +72,13 @@ export const Doctors = () => {
                placeholder={t("Search doctors or hospitals...", "மருத்துவர்கள் அல்லது மருத்துவமனைகளைத் தேடுங்கள்...")}
                className="w-full h-16 pl-16 pr-6 rounded-2xl bg-surface-container-highest/50 border-2 border-transparent focus:border-primary/20 focus:bg-white transition-all font-medium text-lg"
                value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
+               onChange={(e) => { setSearchTerm(e.target.value); setVisibleCount(12); }}
              />
           </div>
           <select 
             className="h-16 px-6 rounded-2xl bg-surface-container-highest/50 border-2 border-transparent focus:border-primary/20 focus:bg-white transition-all font-bold text-on-surface appearance-none cursor-pointer"
             value={specFilter}
-            onChange={(e) => setSpecFilter(e.target.value)}
+            onChange={(e) => { setSpecFilter(e.target.value); setVisibleCount(12); }}
           >
             <option value="">{t("All Specialties", "அனைத்து துறைகளும்")}</option>
             {specialties.map(s => <option key={s} value={s}>{s}</option>)}
@@ -85,7 +86,7 @@ export const Doctors = () => {
           <select 
             className="h-16 px-6 rounded-2xl bg-surface-container-highest/50 border-2 border-transparent focus:border-primary/20 focus:bg-white transition-all font-bold text-on-surface appearance-none cursor-pointer"
             value={locFilter}
-            onChange={(e) => setLocFilter(e.target.value)}
+            onChange={(e) => { setLocFilter(e.target.value); setVisibleCount(12); }}
           >
             <option value="">{t("All Locations", "அனைத்து இடங்களும்")}</option>
             {locations.map(l => <option key={l} value={l}>{l}</option>)}
@@ -96,25 +97,24 @@ export const Doctors = () => {
       {/* Doctor Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         <AnimatePresence mode="popLayout">
-          {filteredDoctors.map((doc, idx) => (
+          {filteredDoctors.slice(0, visibleCount).map((doc, idx) => (
             <motion.div
               key={doc.id}
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3, delay: idx * 0.05 }}
+              transition={{ duration: 0.3, delay: (idx % 12) * 0.05 }}
             >
-              <Card className="h-full flex flex-col p-8 group relative overflow-hidden">
-                {doc.recommended && (
-                  <div className="absolute top-0 right-0 py-2 px-6 bg-primary-fixed text-on-primary-fixed text-[10px] font-black uppercase tracking-widest rounded-bl-3xl shadow-lg border-b border-l border-primary/20">
-                    ⭐ Recommended
-                  </div>
-                )}
+              <Card className="h-full flex flex-col p-8 group relative overflow-hidden bg-white/40 backdrop-blur-xl border-white/40 shadow-2xl hover:bg-white/60 transition-all duration-500 hover:-translate-y-2 card-futuristic">
+                {/* Animated Background Decor */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors" />
+                <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors" />
+
                 
                 <div className="flex items-start gap-5 mb-8">
                   <div className="w-16 h-16 hero-gradient rounded-3xl flex items-center justify-center text-white text-3xl font-black shadow-xl group-hover:scale-110 transition-transform shrink-0">
-                    {doc.name.charAt(4).toUpperCase()}
+                    {doc.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <h3 className="text-xl font-headline font-black text-on-surface leading-snug group-hover:text-primary transition-colors">{doc.name}</h3>
@@ -158,14 +158,41 @@ export const Doctors = () => {
                   </div>
                 </div>
 
-                <Button className="w-full h-14 rounded-2xl text-base shadow-xl group-hover:shadow-primary/30" onClick={() => setBookingDoc(doc)}>
-                  {t("Book Appointment", "முன்பதிவு செய்யுங்கள்")}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    variant="primary"
+                    className="w-full h-14 rounded-2xl text-base shadow-xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest transition-all hover:scale-[1.02]" 
+                    onClick={() => {
+                      if (doc.website) {
+                        window.open(doc.website, '_blank');
+                      } else {
+                        setBookingDoc(doc);
+                      }
+                    }}
+                  >
+                    {doc.website ? t("Visit Website", "இணையதளம் செல்க") : t("Book Appointment", "முன்பதிவு செய்யுங்கள்")}
+                  </Button>
+                </div>
               </Card>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
+
+      {filteredDoctors.length > visibleCount && (
+        <div className="flex flex-col items-center mt-16">
+          <p className="text-on-surface-variant font-bold mb-6 brightness-75">
+            {t("Showing", "காட்டப்படுகிறது")} {visibleCount} {t("of", "இல்")} {filteredDoctors.length} {t("Doctors", "மருத்துவர்கள்")}
+          </p>
+          <Button 
+            size="lg" 
+            className="px-12 h-16 rounded-3xl shadow-3xl font-black uppercase tracking-widest bg-surface-container-high text-primary hover:bg-primary hover:text-white transition-all"
+            onClick={() => setVisibleCount(prev => prev + 12)}
+          >
+            {t("Load More Specialists", "மேலும் நிபுணர்களைக் காட்டு")}
+          </Button>
+        </div>
+      )}
 
       {filteredDoctors.length === 0 && (
         <motion.div 
@@ -217,7 +244,19 @@ export const Doctors = () => {
                  <div>
                     <h3 className="text-lg font-black text-on-surface">{bookingDoc.name}</h3>
                     <p className="text-primary font-bold text-xs uppercase tracking-widest">{bookingDoc.specialist}</p>
-                    <p className="text-on-surface-variant text-xs font-semibold opacity-70 mt-1">{bookingDoc.hospital}</p>
+                    <div className="flex flex-col mt-1">
+                      <p className="text-on-surface-variant text-xs font-semibold opacity-70">{bookingDoc.hospital}</p>
+                      {bookingDoc.website && (
+                        <a 
+                          href={bookingDoc.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary text-[10px] font-black underline mt-1 hover:text-primary-variant transition-colors"
+                        >
+                          Visit Official Website
+                        </a>
+                      )}
+                    </div>
                  </div>
                </div>
 

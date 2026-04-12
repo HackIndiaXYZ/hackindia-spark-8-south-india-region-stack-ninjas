@@ -8,7 +8,6 @@ import { UserProvider } from './context/UserContext';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { Footer } from './components/layout/Footer';
-import { HealthTips } from './components/layout/HealthTips';
 import { HealthTipModal } from './components/ui/HealthTipModal';
 
 // Pages
@@ -21,6 +20,7 @@ import { Dashboard } from './pages/Dashboard';
 import { History } from './pages/History';
 import { Profile } from './pages/Profile';
 import { Remedies } from './pages/Remedies';
+import { HealthTips as HealthTipsPage } from './pages/HealthTips';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -39,6 +39,7 @@ function App() {
                 toggleSidebar={() => setIsSidebarOpen(false)} 
                 isCollapsed={isCollapsed}
                 setIsCollapsed={setIsCollapsed}
+                onSelectTip={setSelectedHealthTip}
               />
               
               {/* Overlay for mobile sidebar */}
@@ -64,6 +65,7 @@ function App() {
                         <Route path="/symptoms" element={<Symptoms />} />
                         <Route path="/doctors" element={<Doctors />} />
                         <Route path="/remedies" element={<Remedies />} />
+                        <Route path="/tips" element={<HealthTipsPage />} />
                         <Route path="/history" element={<History />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/guide" element={<Guide />} />
@@ -73,8 +75,6 @@ function App() {
                     </div>
                   </main>
                   
-                  {/* Health Tips Side Bar */}
-                  <HealthTips onSelectTip={setSelectedHealthTip} />
                 </div>
                 
                 <Footer />

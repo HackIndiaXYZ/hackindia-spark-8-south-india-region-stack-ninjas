@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Stethoscope, Users, History, UserCircle, ChevronLeft, ChevronRight, Heart, Leaf } from 'lucide-react';
+import { 
+  LayoutDashboard, Stethoscope, Users, History, UserCircle, 
+  ChevronLeft, ChevronRight, Heart, Leaf, Sparkles, BookOpen,
+  Droplets, Dumbbell, Zap, Eye, Moon, Shield, Sun, Wind
+} from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { HEALTH_TIPS } from '../../data/healthTips';
+import { Card } from '../ui';
 
 import { useLanguage } from '../../context/LanguageContext';
 
-export const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, setIsCollapsed }) => {
-  const { t } = useLanguage();
+export const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, setIsCollapsed, onSelectTip }) => {
+  const { t, lang } = useLanguage();
 
   const menuItems = [
     { name: t('Dashboard', 'முகப்பு'), path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: t('Symptom Checker', 'அறிகுறி சரிபார்ப்பு'), path: '/symptoms', icon: <Stethoscope size={20} /> },
     { name: t('Doctors', 'மருத்துவர்கள்'), path: '/doctors', icon: <Users size={20} /> },
     { name: t('Home Remedies', 'வீட்டு வைத்தியம்'), path: '/remedies', icon: <Leaf size={20} /> },
+    { name: t('Health Tips', 'ஆரோக்கிய குறிப்புகள்'), path: '/tips', icon: <Sparkles size={20} /> },
+    { name: t('Health Resources', 'ஆரோக்கிய வளங்கள்'), path: '/guide', icon: <BookOpen size={20} /> },
     { name: t('History', 'வரலாறு'), path: '/history', icon: <History size={20} /> },
     { name: t('Profile', 'சுயவிவரம்'), path: '/profile', icon: <UserCircle size={20} /> },
   ];
+
+  const IconMap = {
+    Droplets, Dumbbell, Leaf, Zap, Eye, Moon, Shield, Sun, Wind
+  };
 
   return (
     <aside
@@ -53,7 +65,7 @@ export const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, setIsCollapsed }) 
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <NavLink
               key={item.name}
@@ -72,7 +84,6 @@ export const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, setIsCollapsed }) 
               <span className={isCollapsed ? "mx-auto" : ""}>{item.icon}</span>
               {!isCollapsed && <span>{item.name}</span>}
               
-              {/* Tooltip for collapsed mode */}
               {isCollapsed && (
                 <div className="absolute left-full ml-2 px-2 py-1 bg-inverse-surface text-inverse-on-surface text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
                   {item.name}
